@@ -1,0 +1,17 @@
+# MyStringBuilder with Undo
+
+## Задача
+Реализовать класс `MyStringBuilder`, который повторяет часть функциональности `StringBuilder`, но дополнительно поддерживает метод `undo()` для отката последней операции.
+
+## Пример использования
+
+```java
+MyStringBuilder msb = new MyStringBuilder("Hello");
+msb.append(" World");
+System.out.println(msb); // Hello World
+
+msb.delete(5, 11);
+System.out.println(msb); // Hello
+
+msb.undo();
+System.out.println(msb); // Hello World
