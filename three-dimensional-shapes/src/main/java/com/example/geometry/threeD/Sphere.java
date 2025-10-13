@@ -14,4 +14,8 @@ public class Sphere {
     public double getSurfaceArea() {
         return 4 * Math.PI * radius * radius;
     }
+
+    public String getDescription() {
+        return "This is a sphere.";
+    }
 }

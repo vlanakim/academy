@@ -16,6 +16,8 @@ public class GeometryApp {
 
         System.out.println("Comparing circle and rectangle: " +
                 GeometryUtils.compareAreas(circle, rectangle));
+        System.out.println("Comparing perimeters: " +
+                GeometryUtils.comparePerimeters(circle, rectangle));
 
         Cube cube = new Cube(3);
         Sphere sphere = new Sphere(4);

@@ -14,4 +14,8 @@ public class Cube {
     public double getSurfaceArea() {
         return 6 * side * side;
     }
+
+    public String getDescription() {
+        return "This is a cube.";
+    }
 }
