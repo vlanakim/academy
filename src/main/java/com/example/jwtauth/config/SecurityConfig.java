@@ -3,6 +3,7 @@ package com.example.jwtauth.config;
 import com.example.jwtauth.security.JwtAuthenticationFilter;
 import com.example.jwtauth.security.LoggingFilter;
 import com.example.jwtauth.security.OurUserDetailedService;
+import com.example.jwtauth.service.SocialAppService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,17 +29,34 @@ public class SecurityConfig {
 
     private final LoggingFilter loggingFilter;
 
+    private final SocialAppService socialAppService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/login", "/error", "/webjars/**").permitAll()
                         .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("SUPER_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .requiresChannel(ch -> ch.anyRequest().requiresSecure())
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(socialAppService)
+                        )
+                        .defaultSuccessUrl("/user", true)
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
                 .addFilterBefore(loggingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
